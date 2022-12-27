@@ -1,36 +1,4 @@
---- a/net/minecraft/world/inventory/ContainerCartography.java
-+++ b/net/minecraft/world/inventory/ContainerCartography.java
-@@ -12,8 +12,30 @@
- import net.minecraft.world.level.block.Blocks;
- import net.minecraft.world.level.saveddata.maps.WorldMap;
- 
-+// CraftBukkit start
-+import org.bukkit.Location;
-+import org.bukkit.craftbukkit.inventory.CraftInventoryCartography;
-+import org.bukkit.craftbukkit.inventory.CraftInventoryView;
-+import org.bukkit.entity.Player;
-+// CraftBukkit end
-+
- public class ContainerCartography extends Container {
- 
-+    // CraftBukkit start
-+    private CraftInventoryView bukkitEntity = null;
-+    private Player player;
-+
-+    @Override
-+    public CraftInventoryView getBukkitView() {
-+        if (bukkitEntity != null) {
-+            return bukkitEntity;
-+        }
-+
-+        CraftInventoryCartography inventory = new CraftInventoryCartography(this.container, this.resultContainer);
-+        bukkitEntity = new CraftInventoryView(this.player, inventory, this);
-+        return bukkitEntity;
-+    }
-+    // CraftBukkit end
-     public static final int MAP_SLOT = 0;
-     public static final int ADDITIONAL_SLOT = 1;
-     public static final int RESULT_SLOT = 2;
+
 @@ -38,6 +60,13 @@
                  ContainerCartography.this.slotsChanged(this);
                  super.setChanged();

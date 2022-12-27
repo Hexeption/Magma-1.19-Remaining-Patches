@@ -13,14 +13,14 @@
 +                // CraftBukkit end
                  EntityBoat entityboat = this.getBoat(world, movingobjectpositionblock);
  
-                 entityboat.setType(this.type);
+                 entityboat.setVariant(this.type);
 @@ -66,7 +73,15 @@
                      return InteractionResultWrapper.fail(itemstack);
                  } else {
                      if (!world.isClientSide) {
 -                        world.addFreshEntity(entityboat);
 +                        // CraftBukkit start
-+                        if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityPlaceEvent(world, movingobjectpositionblock.getBlockPos(), movingobjectpositionblock.getDirection(), entityhuman, entityboat).isCancelled()) {
++                        if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityPlaceEvent(world, movingobjectpositionblock.getBlockPos(), movingobjectpositionblock.getDirection(), entityhuman, entityboat, enumhand).isCancelled()) {
 +                            return InteractionResultWrapper.fail(itemstack);
 +                        }
 +

@@ -22,7 +22,7 @@
 -        Map<Recipes<?>, Builder<MinecraftKey, IRecipe<?>>> map1 = Maps.newHashMap();
 +        // CraftBukkit start - SPIGOT-5667 make sure all types are populated and mutable
 +        Map<Recipes<?>, Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>>> map1 = Maps.newHashMap();
-+        for (Recipes<?> recipeType : IRegistry.RECIPE_TYPE) {
++        for (Recipes<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
 +            map1.put(recipeType, new Object2ObjectLinkedOpenHashMap<>());
 +        }
 +        // CraftBukkit end
@@ -140,26 +140,7 @@
 -        this.byName = builder.build();
 +        this.byName = Maps.newHashMap(builder.build()); // CraftBukkit
 +    }
-+
-+    // CraftBukkit start
-+    public boolean removeRecipe(MinecraftKey mcKey) {
-+        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipes : recipes.values()) {
-+            recipes.remove(mcKey);
-+        }
-+
-+        return byName.remove(mcKey) != null;
-+    }
-+
-+    public void clearRecipes() {
-+        this.recipes = Maps.newHashMap();
-+
-+        for (Recipes<?> recipeType : IRegistry.RECIPE_TYPE) {
-+            this.recipes.put(recipeType, new Object2ObjectLinkedOpenHashMap<>());
-+        }
-+
-+        this.byName = Maps.newHashMap();
-     }
-+    // CraftBukkit end
+
  
      public static <C extends IInventory, T extends IRecipe<C>> CraftingManager.a<C, T> createCheck(final Recipes<T> recipes) {
          return new CraftingManager.a<C, T>() {

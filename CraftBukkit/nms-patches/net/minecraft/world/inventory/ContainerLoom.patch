@@ -1,36 +1,4 @@
---- a/net/minecraft/world/inventory/ContainerLoom.java
-+++ b/net/minecraft/world/inventory/ContainerLoom.java
-@@ -24,8 +24,30 @@
- import net.minecraft.world.level.block.entity.EnumBannerPatternType;
- import net.minecraft.world.level.block.entity.TileEntityTypes;
- 
-+// CraftBukkit start
-+import org.bukkit.Location;
-+import org.bukkit.craftbukkit.inventory.CraftInventoryLoom;
-+import org.bukkit.craftbukkit.inventory.CraftInventoryView;
-+import org.bukkit.entity.Player;
-+// CraftBukkit end
-+
- public class ContainerLoom extends Container {
- 
-+    // CraftBukkit start
-+    private CraftInventoryView bukkitEntity = null;
-+    private Player player;
-+
-+    @Override
-+    public CraftInventoryView getBukkitView() {
-+        if (bukkitEntity != null) {
-+            return bukkitEntity;
-+        }
-+
-+        CraftInventoryLoom inventory = new CraftInventoryLoom(this.inputContainer, this.outputContainer);
-+        bukkitEntity = new CraftInventoryView(this.player, inventory, this);
-+        return bukkitEntity;
-+    }
-+    // CraftBukkit end
-     private static final int PATTERN_NOT_SET = -1;
-     private static final int INV_SLOT_START = 4;
-     private static final int INV_SLOT_END = 31;
+
 @@ -60,6 +82,13 @@
                  ContainerLoom.this.slotsChanged(this);
                  ContainerLoom.this.slotUpdateListener.run();
@@ -72,7 +40,7 @@
          return stillValid(this.access, entityhuman, Blocks.LOOM);
      }
  
-@@ -304,6 +342,11 @@
+@@ -309,6 +347,11 @@
  
              if (nbttagcompound != null && nbttagcompound.contains("Patterns", 9)) {
                  nbttaglist = nbttagcompound.getList("Patterns", 10);

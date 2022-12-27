@@ -1,55 +1,5 @@
---- a/net/minecraft/world/inventory/Container.java
-+++ b/net/minecraft/world/inventory/Container.java
-@@ -32,6 +32,20 @@
- import net.minecraft.world.level.block.entity.TileEntity;
- import org.slf4j.Logger;
- 
-+// CraftBukkit start
-+import com.google.common.base.Preconditions;
-+import java.util.HashMap;
-+import java.util.Map;
-+import net.minecraft.network.chat.IChatBaseComponent;
-+import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
-+import org.bukkit.craftbukkit.inventory.CraftInventory;
-+import org.bukkit.craftbukkit.inventory.CraftItemStack;
-+import org.bukkit.event.Event.Result;
-+import org.bukkit.event.inventory.InventoryDragEvent;
-+import org.bukkit.event.inventory.InventoryType;
-+import org.bukkit.inventory.InventoryView;
-+// CraftBukkit end
-+
- public abstract class Container {
- 
-     private static Logger LOGGER = LogUtils.getLogger();
-@@ -62,6 +76,27 @@
-     private ContainerSynchronizer synchronizer;
-     private boolean suppressRemoteUpdates;
- 
-+    // CraftBukkit start
-+    public boolean checkReachable = true;
-+    public abstract InventoryView getBukkitView();
-+    public void transferTo(Container other, org.bukkit.craftbukkit.entity.CraftHumanEntity player) {
-+        InventoryView source = this.getBukkitView(), destination = other.getBukkitView();
-+        ((CraftInventory) source.getTopInventory()).getInventory().onClose(player);
-+        ((CraftInventory) source.getBottomInventory()).getInventory().onClose(player);
-+        ((CraftInventory) destination.getTopInventory()).getInventory().onOpen(player);
-+        ((CraftInventory) destination.getBottomInventory()).getInventory().onOpen(player);
-+    }
-+    private IChatBaseComponent title;
-+    public final IChatBaseComponent getTitle() {
-+        Preconditions.checkState(this.title != null, "Title not set");
-+        return this.title;
-+    }
-+    public final void setTitle(IChatBaseComponent title) {
-+        Preconditions.checkState(this.title == null, "Title already set");
-+        this.title = title;
-+    }
-+    // CraftBukkit end
-+
-     protected Container(@Nullable Containers<?> containers, int i) {
-         this.carried = ItemStack.EMPTY;
-         this.remoteSlots = NonNullList.create();
-@@ -163,6 +198,15 @@
+
+@@ -164,6 +199,15 @@
  
      }
  
@@ -65,7 +15,7 @@
      public void removeSlotListener(ICrafting icrafting) {
          this.containerListeners.remove(icrafting);
      }
-@@ -379,7 +423,7 @@
+@@ -380,7 +424,7 @@
                  }
              } else if (this.quickcraftStatus == 2) {
                  if (!this.quickcraftSlots.isEmpty()) {
@@ -74,7 +24,7 @@
                          k = ((Slot) this.quickcraftSlots.iterator().next()).index;
                          this.resetQuickCraft();
                          this.doClick(k, this.quickcraftType, InventoryClickType.PICKUP, entityhuman);
-@@ -390,6 +434,7 @@
+@@ -391,6 +435,7 @@
                      l = this.getCarried().getCount();
                      Iterator iterator = this.quickcraftSlots.iterator();
  
@@ -82,7 +32,7 @@
                      while (iterator.hasNext()) {
                          Slot slot1 = (Slot) iterator.next();
                          ItemStack itemstack2 = this.getCarried();
-@@ -406,12 +451,48 @@
+@@ -407,12 +452,48 @@
                              }
  
                              l -= itemstack3.getCount() - j1;
@@ -134,7 +84,7 @@
                  }
  
                  this.resetQuickCraft();
-@@ -429,8 +510,11 @@
+@@ -430,8 +511,11 @@
                  if (i == -999) {
                      if (!this.getCarried().isEmpty()) {
                          if (clickaction == ClickAction.PRIMARY) {
@@ -147,7 +97,7 @@
                          } else {
                              entityhuman.drop(this.getCarried().split(1), true);
                          }
-@@ -493,6 +577,15 @@
+@@ -494,6 +578,15 @@
                      }
  
                      slot.setChanged();
@@ -163,7 +113,7 @@
                  }
              } else {
                  Slot slot2;
-@@ -600,13 +693,14 @@
+@@ -607,13 +700,14 @@
              ItemStack itemstack = this.getCarried();
  
              if (!itemstack.isEmpty()) {
@@ -179,7 +129,7 @@
              }
          }
  
-@@ -820,6 +914,11 @@
+@@ -827,6 +921,11 @@
      }
  
      public ItemStack getCarried() {

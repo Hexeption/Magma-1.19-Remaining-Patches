@@ -1,27 +1,4 @@
---- a/net/minecraft/world/entity/projectile/EntityShulkerBullet.java
-+++ b/net/minecraft/world/entity/projectile/EntityShulkerBullet.java
-@@ -59,8 +59,21 @@
-         this.finalTarget = entity;
-         this.currentMoveDirection = EnumDirection.UP;
-         this.selectNextMoveDirection(enumdirection_enumaxis);
-+        projectileSource = (org.bukkit.entity.LivingEntity) entityliving.getBukkitEntity(); // CraftBukkit
-     }
- 
-+    // CraftBukkit start
-+    public Entity getTarget() {
-+        return this.finalTarget;
-+    }
-+
-+    public void setTarget(Entity e) {
-+        this.finalTarget = e;
-+        this.currentMoveDirection = EnumDirection.UP;
-+        this.selectNextMoveDirection(EnumDirection.EnumAxis.X);
-+    }
-+    // CraftBukkit end
-+
-     @Override
-     public SoundCategory getSoundSource() {
-         return SoundCategory.HOSTILE;
+
 @@ -224,7 +237,7 @@
              MovingObjectPosition movingobjectposition = ProjectileHelper.getHitResult(this, this::canHitEntity);
  
