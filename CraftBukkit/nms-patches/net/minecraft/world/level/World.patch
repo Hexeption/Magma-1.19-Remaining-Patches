@@ -195,22 +195,7 @@
              return Blocks.VOID_AIR.defaultBlockState();
          } else {
 @@ -527,6 +716,16 @@
-     @Nullable
-     @Override
-     public TileEntity getBlockEntity(BlockPosition blockposition) {
-+        // CraftBukkit start
-+        return getBlockEntity(blockposition, true);
-+    }
-+
-+    @Nullable
-+    public TileEntity getBlockEntity(BlockPosition blockposition, boolean validate) {
-+        if (capturedTileEntities.containsKey(blockposition)) {
-+            return capturedTileEntities.get(blockposition);
-+        }
-+        // CraftBukkit end
-         return this.isOutsideBuildHeight(blockposition) ? null : (!this.isClientSide && Thread.currentThread() != this.thread ? null : this.getChunkAt(blockposition).getBlockEntity(blockposition, Chunk.EnumTileEntityState.IMMEDIATE));
-     }
- 
+
 @@ -534,6 +733,12 @@
          BlockPosition blockposition = tileentity.getBlockPos();
  
